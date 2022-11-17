@@ -14,25 +14,27 @@ if "--compile" in sys.argv:
 vardict = {"pi":3.14}
 
 def interpretmath(data: str) -> float:
-    print(vardict)
+    #print(vardict)
     for k in vardict.keys():
-        data.replace(k,str(vardict[k]))
-    print(data)
+        
+        data = data.replace(k,str(vardict[k]))
+    #print(data)
     
     try:
         result = int(data)
     except:
-        result = 0
-        exec(f"result = {data}")
+        #result = 0
+        result = eval(data)
+    #print(result)
     try:
         result = float(result)
     except:
         raise ValueError("NO MATH")
-    print(result)
+    #print(result)
     return result
 
 for dataline in data:
-    print(dataline)
+    #print(dataline)
     if dataline.split(" ")[0].strip() == "printout":
         outvar = dataline.split(" ")[1].strip()
         if outvar in vardict.keys():

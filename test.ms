@@ -1,3 +1,3 @@
 #This program calculates radius.
-r = 1
-printout r+3
+r = 1+3
+printout r
