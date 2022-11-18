@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdbool.h>
+#include <stdlib.h>
+#include <string.h>
 
 bool isprime(int n) {
     
@@ -32,6 +34,34 @@ long calcprimes(int n) {
 
 }
 
+bool isnum(char* dat) {
+
+    if(strspn(dat, "0123456789.") == strlen(dat)) {
+        size_t big_digit = 0;
+        sscanf(dat, "%zu%*c",&big_digit);
+        return true;
+    }
+    return false;
+}
+
+double input(char* prompt) {
+    while (true){
+        printf("%s: ",prompt);
+        char l[16];
+        char *ptr;
+        scanf("%s",&l);
+        if (isnum(l)==1) {
+            double d;
+            d = strtod(l,&ptr);
+            return d;
+        } else {
+            printf("Input is not number. please try again.\n");
+        }
+        
+    }
+}
+
 int main() {
+    double pi = 3.14;
     //DATAHERE
 }
