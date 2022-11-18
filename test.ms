@@ -1,3 +1,6 @@
 #This program calculates radius.
-r = 1+3
-printout r
+printout "Radius Calculator"
+input r "Please input radius"
+a = pi*(r**2)
+printout "Area is"
+printout a

@@ -1,5 +1,6 @@
-import math
-
+from math import *
+import shlex
+from time import sleep
 SCRIPT = ""
 import sys
 if len(sys.argv) < 2:
@@ -11,7 +12,7 @@ data = [d.strip() for d in data if d[0] != '#']#Removing comments
 if "--compile" in sys.argv:
     raise NotImplementedError("I haven't done this yet")
 #Interpreted mode
-vardict = {"pi":3.14}
+vardict = {"pi":3.14}#Preloaded variables
 
 def interpretmath(data: str) -> float:
     #print(vardict)
@@ -41,10 +42,39 @@ for dataline in data:
             print(vardict[outvar])
         else:
             try:
-                interpretmath(outvar)
+                if "\"" in outvar:
+                    print(" ".join(dataline.split(" ")[1:]).replace("\"",""))
+                else:
+                    interpretmath(outvar)
             except Exception as e:
                 print(f"ERROR! {str(e)}")
                 sys.exit(1)
+    elif dataline.split(" ")[0].strip() == "input":
+        ddata = shlex.split(dataline)
+        prompt = ddata[2]
+        svar = ddata[1]
+        while True:
+            tinp = input(prompt+": ")
+            try:
+                tinp = float(tinp)
+            except:
+                print("Not A Number.")
+            else:
+                vardict[svar] = tinp
+                break
+    elif dataline.split(" ")[0].strip() == "intinput":
+        ddata = shlex.split(dataline)
+        prompt = ddata[2]
+        svar = ddata[1]
+        while True:
+            tinp = input(prompt+": ")
+            try:
+                tinp = int(tinp)
+            except:
+                print("Not A Number.")
+            else:
+                vardict[svar] = tinp
+                break
     else:
         execline = [d.strip() for d in dataline.split("=")]
         try:
