@@ -1,8 +1,6 @@
 from math import *
 import shlex
-import os
 import sys
-from platform import system
 vardict = {"pi":3.14}#Preloaded variables
 def interpretmath(data: str) -> float:
     #print(vardict)
@@ -10,7 +8,7 @@ def interpretmath(data: str) -> float:
         
         data = data.replace(k,str(vardict[k]))
     #print(data)
-    
+    data = data.replace("^","**")
     try:
         result = int(data)
     except:
@@ -40,7 +38,7 @@ def interpret(dataline,linen=0):
                     else:
                         print(interpretmath(outvar))
                 except Exception as e:
-                    print(f"ERROR! (line {linen}) {str(e)}")
+                    print(f"ERROR! (line {linen+1}) {str(e)}")
         elif dataline.split(" ")[0].strip() == "input":
             ddata = shlex.split(dataline)
             prompt = ddata[2]
@@ -54,6 +52,8 @@ def interpret(dataline,linen=0):
                 else:
                     vardict[svar] = tinp
                     break
+        elif dataline.split(" ")[0].strip() == "dumpvar":
+            print(vardict)
         else:
             execline = [d.strip() for d in dataline.split("=")]
             try:
@@ -63,56 +63,18 @@ def interpret(dataline,linen=0):
     except:
         print(f"ERROR (line {linen}) Syntax Error")
 
-def cinterpret(dataline) -> str:
-    print(dataline)
-    if dataline.split(" ")[0].strip() == "printout":
-        outvar = dataline.split(" ")[1].strip()
-        _bk = "\""
-        if "\"" in outvar:
-            return f'printf("{" ".join(dataline.split(" ")[1:]).replace(_bk,"")}\\n");'
-        return f'printf("%g\\n",{outvar});'
-    elif dataline.split(" ")[0].strip() == "input":
-        ddata = shlex.split(dataline)
-        prompt = ddata[2]
-        svar = ddata[1]
-        return f'double {svar} = input("{prompt}");'
-    else:
-        dlx = dataline.split("=")
-        return f"double {dlx[0].strip()} = {dlx[1].strip()};"
-    return ""
-
 if len(sys.argv) < 2:
-    print("MathScript interpreted v0.1 (c) 2022 Enderbyte Programs")
+    print("MathScript v4 (c) 2022-2023 Enderbyte Programs")
     while True:
         _i = input(">>> ")
         if _i.strip() != "":
+            if _i == "dumpvar":
+                print(vardict)
+                continue
             interpret(_i,0)
 with open(sys.argv[1]) as f:
     data = f.readlines()
 data = [d.strip() for d in data if d[0] != '#']#Removing comments
-if "--compile" in sys.argv:
-    try:
-        with open("template.c") as f:
-            tdata = f.readlines()
-        SCRIPT = ""
-        for dataline in data:
-            SCRIPT += cinterpret(dataline) + "\n"
-        print(SCRIPT)
-        tdata = "\n".join(tdata).replace("//DATAHERE",SCRIPT)
-        with open("temp.c","w+") as f:
-            f.write(tdata)
-        if system() == "Windows":
-            lx = os.system("gcc -O temp.c -lm -o program.exe")#Set to exe if on windows
-        else:
-            lx = os.system("gcc -O temp.c -lm -o program")
-        if lx != 0:
-            raise OSError("Compilation Failure!")
-        os.remove("temp.c")
-        sys.exit()
-    except Exception as e:
-        print(f"Compile Error! {str(e)}")
-        sys.exit(-1)
-#Interpreted mode
 
 dline = 0
 for dataline in data:
