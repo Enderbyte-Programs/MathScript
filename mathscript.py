@@ -1,6 +1,9 @@
+#!/usr/bin/env python3
+
 from math import *
 import shlex
 import sys
+
 vardict = {"pi":3.14}#Preloaded variables
 def interpretmath(data: str) -> float:
     #print(vardict)
